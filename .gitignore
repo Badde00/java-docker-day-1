@@ -36,3 +36,4 @@ out/
 ### VS Code ###
 .vscode/
 application.yml
+requests-0.0.1-SNAPSHOT.jar

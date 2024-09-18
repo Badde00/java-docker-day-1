@@ -1,6 +1,8 @@
 package com.booleanuk.api.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -25,35 +27,35 @@ public class Student {
     private String lastName;
     @JsonFormat(pattern="yyyy-MM-dd")
     private Date dob;
-    @JsonFormat(pattern="yyyy-MM-dd")
-    private Date courseStartDate;
-    private String courseTitle;
     private String avgGrade;
 
-    public Student(String firstName, String lastName, Date dob, Date courseStartDate, String courseTitle, String avgGrade) {
+    @ManyToOne
+    @JoinColumn(name = "students")
+    @JsonIgnoreProperties("students")
+    private Course course;
+
+    public Student(String firstName, String lastName, Date dob, String avgGrade) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dob = dob;
-        this.courseStartDate = courseStartDate;
-        this.courseTitle = courseTitle;
+        this.course = null;
         this.avgGrade = avgGrade;
     }
 
-    public void update (String firstName, String lastName, Date dob, Date courseStartDate, String courseTitle, String avgGrade) {
+    @JsonIgnore
+    public void update (String firstName, String lastName, Date dob, Course course, String avgGrade) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dob = dob;
-        this.courseStartDate = courseStartDate;
-        this.courseTitle = courseTitle;
+        this.course = course;
         this.avgGrade = avgGrade;
     }
 
-    public boolean isInValid() {
+    @JsonIgnore
+    public boolean isInvalid() {
         return (StringUtils.isBlank(firstName)
                 || StringUtils.isBlank(lastName)
                 || dob == null
-                || courseStartDate == null
-                || StringUtils.isBlank(courseTitle)
                 || StringUtils.isBlank(avgGrade));
     }
 }
